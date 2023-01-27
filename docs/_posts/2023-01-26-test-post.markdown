@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "Test post"
+date:   2023-01-26 17:55:39 -0500
+categories: jekyll update
+---
+This is a test post. This is what `code` looks like with this theme. 
+
+Code snippet:
+
+{% highlight python %}
+def foo(bar)
+  return bar + 1
+print(foo(0))
+{% endhighlight %}
+
+I can add a link like [this][robots].
+
+Work in progress. Going to try using a better theme and also adding assignments
+
+[robots]: https://cei-lab.github.io/FastRobots-2023/
