@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title:  "Lab 1: The Artemis Board"
 date:   2023-01-26 17:55:39 -0500
 categories: robotics lab

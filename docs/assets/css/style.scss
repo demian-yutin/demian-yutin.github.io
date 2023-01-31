@@ -2,24 +2,24 @@
 ---
 @import "{{ site.theme }}";
 
-$wrapper_width_variable: 960px; // half of 1920px screen
+// $wrapper_width_variable: 960px; // half of 1920px screen
 
-.wrapper {
-  width: $wrapper_width_variable;
-}
+// .wrapper {
+//   width: $wrapper_width_variable;
+// }
 
-section {
-  width: $wrapper_width_variable - 60px; // should be 60 less than .wrapper width, because margins add to 60
-  border: 1px solid #cbcbcb; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.09), inset 0px 0px 2px 2px rgba(255, 255, 255, 0.5), inset 0 0 5px 5px rgba(255, 255, 255, 0.4);
-}
+// section {
+//   width: $wrapper_width_variable - 60px; // should be 60 less than .wrapper width, because margins add to 60
+//   border: 1px solid #cbcbcb; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.09), inset 0px 0px 2px 2px rgba(255, 255, 255, 0.5), inset 0 0 5px 5px rgba(255, 255, 255, 0.4);
+// }
 
-@media print, screen and (max-width: 1060px) { 
-  section { 
-    width: 590px;
-    padding: 20px 20px; 
-    max-width: 600px; 
-  } 
-}
+// @media print, screen and (max-width: 1060px) { 
+//   section { 
+//     width: 590px;
+//     padding: 20px 20px; 
+//     max-width: 600px; 
+//   } 
+// }
 
 .embed-container {
   position: relative;
