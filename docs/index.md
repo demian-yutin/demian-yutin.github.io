@@ -16,3 +16,4 @@ This webpage serves as a place to submit writeups for labs in ECE 5160: Fast Rob
 ## [Lab 1: The Artemis Board](labs/Lab-1)
 ## [Lab 2: Bluetooth](labs/Lab-2)
 ## [Lab 3: TOF Sensors](labs/Lab-3)
+## [Lab 4: IMU](labs/Lab-4)
