@@ -4,8 +4,8 @@ title:  "Lab 5: Motors and Open Loop Control"
 date:   2023-02-07 17:55:39 -0500
 categories: robotics lab
 video_1: 1CSaYN53IaiteCX568Oh8CzHBT-GoRRX7
-video_2: 12d4m6fgjbb8HI3X5n_epn8glnePEv1Yc
-video_3: 12lszITCfYq4XE-bPJ1jp3BMb_Dyjl93w
+video_3: 1EVdKh9XryEmWuLK65i7hh50cfeBhqVaS
+video_2: 1EWEnVCjBTUFOzXSzabaMnqCSt7B3QMav
 ---
 # Lab Objective
 
@@ -78,7 +78,7 @@ Python sends arguments in a Bluetooth command string:
 ```python
 def moveStraight(value, duration):
   right = value
-  left = round(value*0.866)
+  left = round(value*0.9)
   ble.send_command(CMD.POWER_WHEEL, f"{right}|{left}|{duration}")
 moveStraight(255, 1000)
 ```
@@ -123,7 +123,7 @@ on-axis.
 
 ### Calibration
 To move the robot straight I had to add a calibration factor, scaling the
-power to the left motor down by 13% (multiply by 0.866). I found this value by 
+power to the left motor down by 10% (multiply by 0.9). I found this value by 
 finding pairs of PWM values for the left and right motors which moved the robot 
 straight, and doing a linear regression.
 
@@ -133,22 +133,26 @@ Here is the robot successfully traveling in a straight line for 6 feet:
 
 {% include googleDrivePlayer.html id=page.video_2 %}
 
+```python
+moveStraight(100, 1500)
+```
+
 ### Open Loop Untethered Control
 
 I implemented turns by changing the Bluetooth command slightly:
 ```python
 def rotateInPlace(value, duration):
   right = value
-  left = -1*round(value*0.866) # multiply by -1
+  left = -1*round(value*0.9) # multiply by -1
   ble.send_command(CMD.POWER_WHEEL, f"{right}|{left}|{duration}")
 ```
 To test open-loop untethered control I ran this sequence of commands:
 ```python
-moveStraight(100, 1000)
-rotateInPlace(100, 500)
-moveStraight(100, 1000)
-rotateInPlace(-100, 500)
-moveStraight(100, 1000)
+moveStraight(100, 750)
+rotateInPlace(200, 500)
+moveStraight(100, 750)
+rotateInPlace(-200, 500)
+moveStraight(100, 750)
 ```
 This is demonstrated in the video below:
 
@@ -175,10 +179,17 @@ motor input signal. The default frequency is adequately fast.
 To test how slow the robot could move, I ran these commands and varied the 
 slowest speed:
 ```python
-moveStraight(100, 250) # start-up speed
-moveStraight(50, 500)
-moveStraight(30, 1000) # slowest speed
+moveStraight(100, 100) # start-up speed
+moveStraight(38, 4000) # slowest speed
 ```
 
 I found that the minimum speed after starting up corresponded to a PWM value
-of around 30, and I could reach this speed in about a second.
+of around 38, and I could reach this speed in about 100 ms.
+
+I also tried running the robot in reverse and found it was much more sluggish,
+with a minimum effective PWM of 56. I think this is because of variance in my
+motors.
+```python
+moveStraight(-100, 250) # start-up speed
+moveStraight(-56, 4000) # slowest speed
+```
