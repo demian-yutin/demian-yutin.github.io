@@ -158,8 +158,27 @@ This is demonstrated in the video below:
 
 ### analogWrite frequency
 
-TODO
+The [Arduino reference material][arduino] says that PWM frequency can be between
+490 Hz and 1000 Hz, although this page doesn't list the Artemis Nano. Based on 
+[this forum thread][forum], we can increase the PWM frequency up to almost
+12 KHz, by choosing a higher CTIMER clock speed and smaller PWM period.
+
+[arduino]:https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/
+[forum]:https://forum.sparkfun.com/viewtopic.php?t=55664
+
+We might not want to do this, however. A higher clock speed will consume more
+power, and we don't have a stepper motor so we don't need fine control over the
+motor input signal. The default frequency is adequately fast.
 
 ### Start-up speed vs. slowest speed
 
-TODO
+To test how slow the robot could move, I ran these commands and varied the 
+slowest speed:
+```python
+moveStraight(100, 250) # start-up speed
+moveStraight(50, 500)
+moveStraight(30, 1000) # slowest speed
+```
+
+I found that the minimum speed after starting up corresponded to a PWM value
+of around 30, and I could reach this speed in about a second.
