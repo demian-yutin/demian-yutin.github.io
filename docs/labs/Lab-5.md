@@ -67,7 +67,7 @@ ran the code above with a PWM value of 100. I did this for both motors.
 After confirming both motors worked, I moved all components into the chassis and
 connected the motors and Artemis to their respective batteries.
 
-<img src="/img/Lab5/chassis_labeled.jpg">
+<img src="/img/Lab5/chassis2.jpg">
 
 # Remote Control
 
