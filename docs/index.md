@@ -17,3 +17,4 @@ This webpage serves as a place to submit writeups for labs in ECE 5160: Fast Rob
 ## [Lab 2: Bluetooth](labs/Lab-2)
 ## [Lab 3: TOF Sensors](labs/Lab-3)
 ## [Lab 4: IMU](labs/Lab-4)
+## [Lab 5: Motors and Control](labs/Lab-5)

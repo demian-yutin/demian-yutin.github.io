@@ -15,7 +15,7 @@ The purpose of this lab was to set up the Artemis board and Arduino IDE which we
 will be using for the rest of the semester, and to learn how to use the on-board
 LED, the serial message channel, and various on-board sensors.
 
-# Part 1: Arduino Intallation
+# Part 1: Arduino Installation
 
 I was able to install the Arduino IDE and connect it to the Artemis Nano without
 any issues, except that the [setup instructions][setup_instr] linked in the 
