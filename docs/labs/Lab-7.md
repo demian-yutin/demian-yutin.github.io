@@ -3,6 +3,7 @@ layout: default
 title:  "Lab 7: Kalman Filter"
 date:   2023-03-13 14:00:00 -0500
 categories: robotics lab
+video_1: 138w3-cH30Y5YoKYQkn_MraUbFvlysF8V
 ---
 # Lab Objective
 
@@ -111,3 +112,50 @@ for u, d in zip(values, distancesMM):
 <p align="center">
 <img src="/img/Lab7/kf.png">
 </p>
+
+# Extrapolation
+
+To increase the effective sampling speed of the TOF sensor without implementing
+a Kalman filter on the Arduino, I decided to use extrapolation to predict 
+distance sensor readings based on the previous 2 actual readings.
+
+To do this, I changed the code in my ```tof``` class:
+
+```c
+int getDistanceEstimate() {
+// update distance history if new data is available
+if (sensor1.checkForDataReady()) {
+    int newDist = distance1 * (1 - alpha) + alpha * sensor1.getDistance();
+    sensor1.clearInterrupt();
+    distance2 = distance1;
+    distance1 = newDist;
+    time2 = time1;
+    time1 = millis();
+    nPoints++;
+}
+if (nPoints >= 2) {
+    // extrapolate from previous 2 points for estimate
+    long time = millis();
+    float slope = (float)(distance1 - distance2)/(time1 - time2);
+    long timeDelta = time - time1;
+    estimatedDistance = (int)(0.5 + distance1 + slope * timeDelta);
+    return estimatedDistance;
+} else {
+    return distance1;
+}
+}
+```
+
+After adjusting the debug code to collect the raw distance data as well as the 
+interpolated distance data, we can see that the interpolation successfully
+smooths out the slow sampling rate of the TOF:
+
+(Raw distance in red, extrapolated distance in orange)
+
+<p align="center">
+<img src="/img/Lab7/interp.png">
+</p>
+
+The PID controller works with these extrapolated distance values just as well:
+
+{% include googleDrivePlayer.html id=page.video_1 %}
