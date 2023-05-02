@@ -21,8 +21,8 @@ Robots, which I am currently taking. Links to each completed lab are below.
 ## [Lab 4: IMU](labs/Lab-4)
 ## [Lab 5: Motors and Control](labs/Lab-5)
 
-<!-- ## [Lab 6: PID Speed Control](labs/Lab-6)
-## [Lab 7: Kalman Filter](labs/Lab-7)
+## [Lab 6: PID Speed Control](labs/Lab-6)
+<!-- ## [Lab 7: Kalman Filter](labs/Lab-7)
 ## [Lab 8: Stunts](labs/Lab-8)
 ## [Lab 9: Mapping](labs/Lab-9)
 ## [Lab 10: Simulator](labs/Lab-10)
