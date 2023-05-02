@@ -50,5 +50,64 @@ $$ m = -d*t_{0.9}/ln(1-0.9) = 0.000101 $$.
 
 # Kalman Filter
 
-After finding these values I plugged them into this code written by Anya last 
-year to get 
+After finding these values I plugged them into [this code written by Anya last 
+year][Anya] to get a Kalman filter:
+
+[Anya]:https://anyafp.github.io/ece4960/labs/lab7/
+
+```python
+# Initial state uncertainty 
+sig = np.array([[5**2,0],[0,5**2]])
+
+d = 0.000333 # drag
+m = 0.000101 # mass
+
+# A, B, C matrices
+A = np.array([[0,1],[0,-d/m]])
+B = np.array([[0],[1/m]])
+C = np.array([[-1,0]])
+
+# Process and sensor noise
+sig_u = np.array([[10**2,0],[0,10**2]])
+sig_z = np.array([[20**2]])
+
+# Discretize A and B
+delta_t = times[1] - times[0]
+Ad = np.eye(2) + delta_t * A
+Bd = delta_t * B
+
+# Initial state
+x = np.array([[-distancesMM[0]],[0]])
+
+# KF estimation
+def kf(x,u,sig,y):
+    
+    x_p = Ad.dot(x) + Bd.dot(u)                      # predicted state
+    sig_p = Ad.dot(sig.dot(Ad.transpose())) + sig_u  # predicted state uncertainty
+    
+    y_m = y-C.dot(x_p)
+    sig_m = C.dot(sig_p.dot(C.transpose())) + sig_z
+    
+    kf_gain = sig_p.dot(C.transpose().dot(np.linalg.inv(sig_m)))  # KF gain
+
+    x_n   = x_p + kf_gain.dot(y_m)                   # new state 
+    sig_n = (np.eye(2) - kf_gain.dot(C)).dot(sig_p)  # new state uncertainty
+
+    return x_n, sig_n
+```
+
+I ran this code to test what the Kalman filter would output, and compared this
+to the raw measurements from my TOF sensor:
+
+```python
+# Run code
+kf_state = []
+for u, d in zip(values, distancesMM):
+    x, sig = kf(x, [[u/80]], sig, [[d]])
+    kf_state.append(x[:,0])
+# then plot kf_state...
+```
+
+<p align="center">
+<img src="/img/Lab7/kf.png">
+</p>
