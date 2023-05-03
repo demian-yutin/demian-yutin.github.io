@@ -178,7 +178,7 @@ for u, d in zip(values, distancesMM):
 </p>
 
 The Kalman filter successfully smooths out the sensor values and increases the
-number of "readings" we get, although it also introduces some delay.
+number of "readings" we get.
 
 # Extrapolation
 
