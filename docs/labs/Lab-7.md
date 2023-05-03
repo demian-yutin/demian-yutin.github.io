@@ -13,46 +13,114 @@ slow time-of-flight sensor, allowing the robot to do the [Lab 6][Lab6] task
 
 [Lab6]:Lab-6
 
-# Step response
+# System Model
 
-To estimate the drag and mass of the robot, I powered the wheels with a step 
-function. The max PWM value was set to 250, which is around the value I got out
-of my PID controller. The robot started 4m away from a wall.
+The forces acting on the robot can be summarized as
 
-The measured distance to the wall and PWM value is shown below:
+$$\begin{align}
+F = u\cdot c - x'\cdot d = m \cdot x''
+\end{align}$$
+
+where $$ u $$ is the PWM control value, $$ x $$, $$ x' $$, and $$ x'' $$ are
+position, velocity, and acceleration, and $$ c $$, $$ d $$, and $$ m $$ are
+unknown constants. We can rewrite this as
+
+$$\begin{align}
+\begin{bmatrix} x' \\ x'' \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ 0 & -d/m \end{bmatrix}
+\begin{bmatrix} x \\ x' \end{bmatrix} + \begin{bmatrix} 0 \\ c/m \end{bmatrix} u
+\end{align}$$
+
+or,
+
+$$\begin{align}
+\frac{d}{dt} \vec{x} = \mathbf{A} \vec{x} + \mathbf{B} u
+\end{align}$$
+
+To get $$ \mathbf{A} $$ and $$ \mathbf{B} $$ we need $$ d/m $$ and $$ c/m $$,
+which we can get by solving the differential equation 
+$$ x'' + \frac{d}{m} x' = \frac{c}{m}u $$.
+
+## Maximum Speed
+
+If $$ u $$ is held constant at some value $$ u_{\text{max}} $$, then the robot 
+stops accelerating once it hits its maximum speed. This means 
+$$ x' = x'_{\text{max}} $$ and $$ x'' = 0 $$. Plugging and solving gives us 
+$$ x'_{\text{max}} = u_{\text{max}}c/d $$, or 
+
+$$\begin{align}
+d = \frac{u_{\text{max}}}{x'_{\text{max}}}c
+\end{align}$$
+
+## Ramping-up
+
+If we solve the differential equation for $$ x' $$ with the initial condition
+that $$ x'(t) = 0 $$, we get:
+
+$$\begin{align}
+x'(t) = x'_{\text{max}} \cdot \left( 1 - e^{-d \cdot t/m} \right)
+\end{align}$$
+
+This means that, if $$ u $$ is constant, the robot ramps up exponentially to its
+maximum speed. The robot is at 90% of its max speed when
+
+$$\begin{align}
+1 - e^{-d \cdot t/m} &= 0.9
+\end{align}$$
+
+Labeling this time-to-90% as $$ t_{90} $$ we can solve for $$ m $$:
+
+$$\begin{align}
+m = -\frac{d\cdot t_{90}}{\ln(0.1)}
+\end{align}$$
+
+Using these expressions for $$ d $$ and $$ m $$ we can solve for the unknown
+coefficients in $$ \mathbf{A} $$ and $$ \mathbf{B} $$:
+
+$$\begin{align}
+\mathbf{A} &= \begin{bmatrix} 0 & 1 \\ 0 & \frac{\ln(0.1)}{t_{90}} \end{bmatrix}\\
+\mathbf{B} &= \begin{bmatrix} 0 \\ -\frac{\ln(0.1)}{t_{90}}\cdot\frac{x'_{\text{max}}}{u_{\text{max}}} \end{bmatrix}
+\end{align}$$
+
+# Step Response
+
+To measure $$ x'_{\text{max}} $$ and $$ t_{90} $$ I powered the robot with a 
+step function and measured the response. I set the control PWM value to a 
+constant $$ u_\text{max} = $$ 250, and powered it for 1.3 seconds, starting 3 
+meters away from a wall.
+
+This was the PWM value over time:
 
 <p align="center">
-<img src="/img/Lab7/step_distance.png">
+<img src="/img/Lab7/step_pwm.png">
 </p>
 
-The velocity (time derivative of distance to wall) is plotted below:
+The position and velocity are plotted below:
 
 <p align="center">
-<img src="/img/Lab7/step_speed.png">
+<img src="/img/Lab7/step_distance_speed.png">
 </p>
 
-The maximum speed reached by the robot was about 3 m/s. It didn't reach a 
-steady-state speed, since I couldn't start the robot further away from the wall
-than 4 meters or else my sensor readings wouldn't be accurate. I can estimate 
-the steady-state speed of the robot is around 3 m/s.
-
-Based on this, the drag value I used was 
-$$ d = u/x' = 1/(3000 mm/s) = 0.000333 $$. 
+The robot reached a steady-state speed of 3 m/s briefly before crashing into the
+wall (this is the moment the data ends). So, we can say that 
+$$ x_{\text{max}} = 3000 $$ mm/s when $$ u_{\text{max}} = 250 $$.
 
 The time taken to reach 90% of the steady state speed, starting from 0 velocity,
-was around 0.7 seconds:
+was around 0.9 seconds:
 
 <p align="center">
-<img src="/img/Lab7/speed_annotated.png">
+<img src="/img/Lab7/time_to_90.png">
 </p>
 
-Based on this, I estimated the inertia as 
-$$ m = -d*t_{0.9}/ln(1-0.9) = 0.000101 $$.
+Based on these observations, I solved for the unknowns to get 
+$$ A_{2,2} = -2.56 $$ and $$ B_{2,1} = 30.7 $$.
+
+$$ c $$ is still unknown, but if we assume $$ u_{\text{max}}c = 1 $$ newton, 
+then we get a damping coefficient of $$ d = 0.333 $$ Ns/m, and a mass of 
+$$ m = 0.130 $$ kg.
 
 # Kalman Filter
 
-After finding these values I plugged them into [this code written by Anya last 
-year][Anya] to get a Kalman filter:
+I modified [this code written by Anya last year][Anya] to get a Kalman filter:
 
 [Anya]:https://anyafp.github.io/ece4960/labs/lab7/
 
@@ -60,12 +128,9 @@ year][Anya] to get a Kalman filter:
 # Initial state uncertainty 
 sig = np.array([[5**2,0],[0,5**2]])
 
-d = 0.000333 # drag
-m = 0.000101 # mass
-
 # A, B, C matrices
-A = np.array([[0,1],[0,-d/m]])
-B = np.array([[0],[1/m]])
+A = np.array([[0,1],[0,-2.56]])
+B = np.array([[0],[30.7]])
 C = np.array([[-1,0]])
 
 # Process and sensor noise
@@ -82,7 +147,6 @@ x = np.array([[-distancesMM[0]],[0]])
 
 # KF estimation
 def kf(x,u,sig,y):
-    
     x_p = Ad.dot(x) + Bd.dot(u)                      # predicted state
     sig_p = Ad.dot(sig.dot(Ad.transpose())) + sig_u  # predicted state uncertainty
     
@@ -112,6 +176,9 @@ for u, d in zip(values, distancesMM):
 <p align="center">
 <img src="/img/Lab7/kf.png">
 </p>
+
+The Kalman filter successfully smooths out the sensor values and increases the
+number of "readings" we get, although it also introduces some delay.
 
 # Extrapolation
 
