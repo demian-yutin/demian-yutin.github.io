@@ -20,12 +20,21 @@ speed, flip distance, and other parameters that I could change on the fly in
 Jupyter.
 
 I used the same system of sending debug data as before, so I could see when the
-robot was deciding to flip, and what the distance readings were.
-
+robot was deciding to flip, and what the distance readings were. 
 For distance readings I used the extrapolated distance estimate from 
 [Lab 7][Lab7].
 
 [Lab7]:Lab-7
+
+I plotted the data from one of my runs below, where you can see that the PWM 
+value controlling the robot changes sign once the sensor reading crosses 1 
+meter. You can also see the robot doesn't flip immediately, but decelerates
+instead.
+
+<p align="center">
+<img src="/img/Lab8/lab8.png">
+</p>
+
 
 On the Arduino side, the code was basically this:
 
