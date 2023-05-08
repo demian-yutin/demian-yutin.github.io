@@ -95,9 +95,9 @@ The list of things I tried to make this work includes the following:
 - Putting rubber bands on the wheels to try to improve the friction
 
 The next thing I was going to try was to use some kind of PID orientation 
-control to make sure the robot stayed straight while flipping, but I decided
-instead to submit this and move on with my life, since this lab is already very
-late.
+control to make sure the robot stayed straight while flipping, but I was advised
+by a TA to just submit this and finish the other labs, since this lab is already
+very late.
 
 # Blooper
 
