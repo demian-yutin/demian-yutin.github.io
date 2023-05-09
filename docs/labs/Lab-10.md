@@ -249,3 +249,7 @@ position (blue).
 
 The Bayes Filter is working as expected, since the estimated position is much
 closer to the actual position than just the odometry-based prediction.
+
+The white and grey cells show the $$ \bar{bel} $$ probability distribution. 
+These values are generally highest near the robot's actual position, meaning 
+that our probability distribution is centered near the right place.
